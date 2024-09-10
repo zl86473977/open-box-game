@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { VersioningType } from '@nestjs/common';
 import * as session from 'express-session';
 import { Request, Response, NextFunction } from 'express';
-import * as cors from 'cors';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
@@ -20,8 +19,9 @@ function MiddleWareAll(req: Request, res: Response, next: NextFunction) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    // cors: true
+  });
   app.useStaticAssets(join(__dirname, 'images'), {
     prefix: '/pics',
   })
@@ -39,7 +39,7 @@ async function bootstrap() {
       cookie: { maxAge: 999999 },
     }),
   );
-  app.use(cors());
+  // app.use(cors());
   app.use(MiddleWareAll);
 
   await app.listen(3000);
